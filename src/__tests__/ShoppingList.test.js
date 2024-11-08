@@ -4,7 +4,7 @@ import {
   render,
   screen,
   fireEvent,
-  waitForElementToBeRemoved,
+  waitFor,
 } from "@testing-library/react";
 import { resetData } from "../mocks/handlers";
 import { server } from "../mocks/server";
@@ -64,20 +64,18 @@ test("updates the isInCart status of an item when the Add/Remove from Cart butto
   const addButtons = await screen.findAllByText(/Add to Cart/);
 
   expect(addButtons.length).toBe(3);
-  expect(screen.queryByText(/Remove From Cart/)).not.toBeInTheDocument();
+  expect(screen.queryByText(/Remove from Cart/i)).not.toBeInTheDocument();
 
   fireEvent.click(addButtons[0]);
 
-  const removeButton = await screen.findByText(/Remove From Cart/);
+  const removeButton = await screen.findByRole("button", { name: /remove from cart/i });
   expect(removeButton).toBeInTheDocument();
 
   // Rerender the component to ensure the item was persisted
   rerender(<ShoppingList />);
 
   const rerenderedAddButtons = await screen.findAllByText(/Add to Cart/);
-  const rerenderedRemoveButtons = await screen.findAllByText(
-    /Remove From Cart/
-  );
+  const rerenderedRemoveButtons = await screen.findAllByText(/Remove from Cart/i);
 
   expect(rerenderedAddButtons.length).toBe(2);
   expect(rerenderedRemoveButtons.length).toBe(1);
@@ -92,7 +90,7 @@ test("removes an item from the list when the delete button is clicked", async ()
   const deleteButtons = await screen.findAllByText(/Delete/);
   fireEvent.click(deleteButtons[0]);
 
-  await waitForElementToBeRemoved(() => screen.queryByText(/Yogurt/));
+  await waitFor(() => expect(screen.queryByText(/Yogurt/)).not.toBeInTheDocument());
 
   // Rerender the component to ensure the item was persisted
   rerender(<ShoppingList />);

@@ -1,14 +1,13 @@
-import React from "react";
+import React, { useState } from "react";
 
-function Item({ item }) {
+function Item({ item, onToggleInCart, onDelete }) {
   return (
-    <li className={item.isInCart ? "in-cart" : ""}>
-      <span>{item.name}</span>
-      <span className="category">{item.category}</span>
-      <button className={item.isInCart ? "remove" : "add"}>
-        {item.isInCart ? "Remove From" : "Add to"} Cart
+    <li>
+      <span>{item.name}</span> - <span>{item.category}</span>
+      <button onClick={onToggleInCart}>
+        {item.isInCart ? "Remove from Cart" : "Add to Cart"}
       </button>
-      <button className="remove">Delete</button>
+      <button onClick={onDelete}>Delete</button>
     </li>
   );
 }
